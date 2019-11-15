@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 
 
 class TagQuerySet(models.QuerySet):
-
     def popular(self):
         return self.annotate(
             posts_with_tag=Count('posts')
@@ -13,7 +12,6 @@ class TagQuerySet(models.QuerySet):
 
 
 class PostQuerySet(models.QuerySet):
-
     def popular(self):
         return self.annotate(
             likes_count=Count('likes')
@@ -22,7 +20,7 @@ class PostQuerySet(models.QuerySet):
     def fetch_with_comments_count(self):
         post_ids = [post.id for post in self]
         post_with_comments = Post.objects.filter(id__in=post_ids).annotate(
-            comments_count=Count('post_comment')
+            comments_count=Count('post_comments')
         )
         ids_and_comments = post_with_comments.values_list(
             'id', 'comments_count'
@@ -90,7 +88,7 @@ class Comment(models.Model):
         "Post",
         on_delete=models.CASCADE,
         verbose_name="Пост, к которому написан",
-        related_name='post_comment'
+        related_name='post_comments'
     )
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор")
 
